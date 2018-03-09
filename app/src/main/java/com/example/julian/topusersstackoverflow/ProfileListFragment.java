@@ -16,6 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.os.AsyncTask;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+
 import java.io.InputStream;
 import java.util.List;
 
@@ -72,7 +76,11 @@ public class ProfileListFragment extends Fragment{
         public void bindProfile(Profile profile){
             mProfile = profile;
             mProfileNameTextView.setText(profile.getName());
-            new DownloadImageTask(mProfileImageView).execute(mProfile.getImageUrl());
+            RequestOptions requestOptions = new RequestOptions();
+            requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
+            requestOptions.skipMemoryCache(false);
+            Glide.with(getContext()).load(mProfile.getImageUrl())
+                    .apply(requestOptions).into(mProfileImageView);
         }
 
         @Override
@@ -122,31 +130,6 @@ public class ProfileListFragment extends Fragment{
                 return;
             }
             updateUI(profiles);
-        }
-    }
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
         }
     }
 }
