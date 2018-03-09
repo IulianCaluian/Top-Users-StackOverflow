@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+    <ImageView
+        android:id="@+id/profile_image"
+        android:layout_margin="8dp"
+        android:layout_width="192dp"
+        android:layout_height="192dp"
+        android:layout_gravity="center"
+        />
+    <TextView
+        android:id="@+id/profile_name"
+        android:textSize="48sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="4dp"/>
+    <TextView
+        android:id="@+id/profile_address"
+        android:textSize="16sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="4dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/gold_medals"
+            android:layout_margin="4dp"
+            android:background="@drawable/gold_background"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/silver_medals"
+            android:layout_margin="4dp"
+            android:background="@drawable/silver_background"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/bronze_medals"
+            android:layout_margin="4dp"
+            android:background="@drawable/bronze_background"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>
