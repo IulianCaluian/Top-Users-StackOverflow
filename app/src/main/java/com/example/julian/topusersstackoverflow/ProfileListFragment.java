@@ -18,6 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.os.AsyncTask;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+
 import java.io.InputStream;
 import java.util.List;
 
@@ -39,6 +43,7 @@ public class ProfileListFragment extends Fragment implements LoaderManager.Loade
         mProfileRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         mProfileAdapter = new ProfileAdapter(null);
+        updateUI();
 
         LoaderManager loaderManager = getLoaderManager();
         loaderManager.initLoader(PROFILE_LOADER_ID,null,this);
@@ -84,7 +89,10 @@ public class ProfileListFragment extends Fragment implements LoaderManager.Loade
         public void bindProfile(Profile profile){
             mProfile = profile;
             mProfileNameTextView.setText(profile.getName());
-            new DownloadImageTask(mProfileImageView).execute(mProfile.getImageUrl());
+            RequestOptions requestOptions = new RequestOptions();
+            requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
+            Glide.with(getContext()).load(mProfile.getImageUrl())
+                    .apply(requestOptions).into(mProfileImageView);
         }
 
         @Override
@@ -123,32 +131,11 @@ public class ProfileListFragment extends Fragment implements LoaderManager.Loade
 
         @Override
         public int getItemCount() {
-            return mProfiles.size();
-        }
-    }
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
+            if(mProfiles!=null){
+                return mProfiles.size();
+            }else {
+                return 0;
             }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
         }
     }
 }
