@@ -11,6 +11,10 @@ public class Profile {
     private int nrMedalsSilver;
     private int nrMedalsBronze;
 
+    public Profile(){
+        nrMedalsBronze = nrMedalsGold = nrMedalsSilver = 0;
+    }
+
     public String getName() {
         return mName;
     }
