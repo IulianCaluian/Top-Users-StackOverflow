@@ -1,5 +1,6 @@
 package com.example.julian.topusersstackoverflow;
 
+import android.content.Intent;
 import android.content.Loader;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -101,7 +102,8 @@ public class ProfileListFragment extends Fragment implements LoaderManager.Loade
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(getActivity(),mProfile.getName(),Toast.LENGTH_SHORT).show();
+            Intent intent = ProfileActivity.newIntent(getActivity(),mProfile.getRank());
+            startActivity(intent);
         }
     }
 

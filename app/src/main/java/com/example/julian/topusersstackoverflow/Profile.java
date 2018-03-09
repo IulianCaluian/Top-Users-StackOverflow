@@ -5,6 +5,7 @@ package com.example.julian.topusersstackoverflow;
  */
 
 public class Profile {
+    private int mRank;
     private String mName;
     private String mLocation;
     private String mImageUrl;
@@ -63,5 +64,13 @@ public class Profile {
 
     public void setImageUrl(String imageUrl) {
         mImageUrl = imageUrl;
+    }
+
+    public int getRank() {
+        return mRank;
+    }
+
+    public void setRank(int rank) {
+        mRank = rank;
     }
 }

@@ -6,7 +6,7 @@
     >
     <ImageView
         android:id="@+id/profile_image"
-        android:layout_margin="8dp"
+        android:layout_margin="32dp"
         android:layout_width="192dp"
         android:layout_height="192dp"
         android:layout_gravity="center"
@@ -26,9 +26,13 @@
         android:layout_gravity="center"
         android:layout_margin="4dp"/>
     <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
+            android:textAlignment="center"
+            android:textSize="32sp"
+            android:padding="4dp"
             android:id="@+id/gold_medals"
             android:layout_margin="4dp"
             android:background="@drawable/gold_background"
@@ -36,6 +40,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
         <TextView
+            android:textAlignment="center"
+            android:textSize="32sp"
+            android:padding="4dp"
             android:id="@+id/silver_medals"
             android:layout_margin="4dp"
             android:background="@drawable/silver_background"
@@ -43,6 +50,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
         <TextView
+            android:textAlignment="center"
+            android:textSize="32sp"
+            android:padding="4dp"
             android:id="@+id/bronze_medals"
             android:layout_margin="4dp"
             android:background="@drawable/bronze_background"

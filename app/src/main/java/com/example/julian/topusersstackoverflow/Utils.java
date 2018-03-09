@@ -62,6 +62,22 @@ public final class Utils {
         return profiles;
     }
 
+    public static Profile fetchProfileData(String requestUrl,int rank) {
+
+        URL url = createUrl(requestUrl);
+
+        String jsonResponse = null;
+        try {
+            jsonResponse = makeHttpRequest(url);
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Error closing input stream", e);
+        }
+
+        // Extract relevant fields from the JSON response and create an {@link Event} object
+        return extractFeatureFromJson(jsonResponse,rank);
+
+    }
+
     /**
      * Returns new URL object from the given string URL.
      */
@@ -116,6 +132,7 @@ public final class Utils {
         return jsonResponse;
     }
 
+
     /**
      * Convert the {@link InputStream} into a String which contains the
      * whole JSON response from the server.
@@ -153,11 +170,50 @@ public final class Utils {
                 String nume = object.getString("display_name");
                 String imageUrl = object.getString("profile_image");
                 Profile p = new Profile();
+                p.setRank(i);
                 p.setName(nume);
                 p.setImageUrl(imageUrl);
                 profiles.add(p);
             }
             return profiles;
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "Problem parsing the earthquake JSON results", e);
+        }
+        return null;
+    }
+
+    private static Profile extractFeatureFromJson(String profilesJSON,int rank) {
+        // If the JSON string is empty or null, then return early.
+        if (TextUtils.isEmpty(profilesJSON)) {
+            return null;
+        }
+
+        try {
+            JSONObject baseJsonResponse = new JSONObject(profilesJSON);
+            JSONArray featureArray = baseJsonResponse.getJSONArray("items");
+
+            // If there are results in the features array
+            Profile profile = null;
+
+            if( rank<featureArray.length()){
+                JSONObject object = featureArray.getJSONObject(rank);
+                String nume = object.getString("display_name");
+                String imageUrl = object.getString("profile_image");
+                String location = object.getString("location");
+                JSONObject medals = object.getJSONObject("badge_counts");
+                int golds = medals.getInt("gold");
+                int silvers = medals.getInt("silver");
+                int bronzes = medals.getInt("bronze");
+                Profile p = new Profile();
+                p.setName(nume);
+                p.setImageUrl(imageUrl);
+                p.setLocation(location);
+                p.setNrMedalsGold(golds);
+                p.setNrMedalsSilver(silvers);
+                p.setNrMedalsBronze(bronzes);
+                return p;
+            }
+            return null;
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Problem parsing the earthquake JSON results", e);
         }

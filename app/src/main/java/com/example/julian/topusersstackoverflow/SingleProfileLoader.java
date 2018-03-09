@@ -4,18 +4,18 @@ package com.example.julian.topusersstackoverflow;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
-import java.util.List;
-
 /**
  * Created by Julian on 09.03.2018.
  */
 
-public class ProfileLoader extends AsyncTaskLoader<List<Profile>> {
+public class SingleProfileLoader extends AsyncTaskLoader<Profile> {
     private String mUrl;
+    private int mRank;
 
-    public ProfileLoader(Context context, String url) {
+    public SingleProfileLoader(Context context, String url,int rank) {
         super(context);
         mUrl = url;
+        mRank = rank;
     }
 
     @Override
@@ -23,13 +23,13 @@ public class ProfileLoader extends AsyncTaskLoader<List<Profile>> {
         forceLoad();
     }
     @Override
-    public List<Profile> loadInBackground() {
+    public Profile loadInBackground() {
         if (mUrl == null) {
             return null;
         }
-        // Perform the network request, parse the response, and extract a list of profiles.
-        List<Profile> profiles = Utils.fetchProfilesData(mUrl);
-        return profiles;
+        // Perform the network request, parse the response, and extract profile
+        Profile profile = Utils.fetchProfileData(mUrl,mRank);
+        return profile;
     }
 
 
