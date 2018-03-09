@@ -1,10 +1,12 @@
 package com.example.julian.topusersstackoverflow;
 
+import android.content.Loader;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,11 +25,11 @@ import java.util.List;
  * Created by Julian on 09.03.2018.
  */
 
-public class ProfileListFragment extends Fragment{
+public class ProfileListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Profile>>{
     private RecyclerView mProfileRecyclerView;
     private ProfileAdapter mProfileAdapter;
     private static final String USGS_REQUEST_URL ="https://api.stackexchange.com/2.2/users?order=desc&sort=reputation&site=stackoverflow";
-
+    private static final int PROFILE_LOADER_ID = 1;
 
     @Nullable
     @Override
@@ -36,25 +38,35 @@ public class ProfileListFragment extends Fragment{
         mProfileRecyclerView = view.findViewById(R.id.profile_list_recycler_view);
         mProfileRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        updateUI();
+        mProfileAdapter = new ProfileAdapter(null);
 
-        MyAsyncTask task = new MyAsyncTask();
-        task.execute(USGS_REQUEST_URL);
+        LoaderManager loaderManager = getLoaderManager();
+        loaderManager.initLoader(PROFILE_LOADER_ID,null,this);
 
         return view;
     }
 
     private void updateUI(){
-        ProfileLib profileLib = ProfileLib.get();
-        List<Profile> profiles = profileLib.getProfiles();
-
-        mProfileAdapter = new ProfileAdapter(profiles);
         mProfileRecyclerView.setAdapter(mProfileAdapter);
     }
 
-    private void updateUI(List<Profile> profiles){
-        mProfileAdapter = new ProfileAdapter(profiles);
-        mProfileRecyclerView.setAdapter(mProfileAdapter);
+    @Override
+    public android.support.v4.content.Loader<List<Profile>> onCreateLoader(int id, Bundle args) {
+        return new ProfileLoader(getContext(),USGS_REQUEST_URL);
+    }
+
+    @Override
+    public void onLoadFinished(android.support.v4.content.Loader<List<Profile>> loader, List<Profile> profiles) {
+        mProfileAdapter.clear();
+        if (profiles != null && !profiles.isEmpty()) {
+            mProfileAdapter.addAll(profiles);
+        }
+        updateUI();
+    }
+
+    @Override
+    public void onLoaderReset(android.support.v4.content.Loader<List<Profile>> loader) {
+        mProfileAdapter.clear();
     }
 
     private class ProfileHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -86,6 +98,16 @@ public class ProfileListFragment extends Fragment{
 
         public ProfileAdapter(List<Profile> profiles) {mProfiles = profiles;}
 
+        public void clear(){mProfiles = null;}
+
+        public void addAll(List<Profile> profiles){
+            if(mProfiles!=null && !mProfiles.isEmpty()){
+                mProfiles.addAll(profiles);
+            } else {
+                mProfiles = profiles;
+            }
+        }
+
         @Override
         public ProfileHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
@@ -102,26 +124,6 @@ public class ProfileListFragment extends Fragment{
         @Override
         public int getItemCount() {
             return mProfiles.size();
-        }
-    }
-
-    class MyAsyncTask extends AsyncTask<String,Void,List<Profile>>{
-        @Override
-        protected List<Profile> doInBackground(String... urls) {
-            if (urls.length < 1 || urls[0] == null) {
-                return null;
-            }
-
-            List<Profile> result = Utils.fetchProfilesData(urls[0]);
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(List<Profile> profiles) {
-            if(profiles == null) {
-                return;
-            }
-            updateUI(profiles);
         }
     }
 
