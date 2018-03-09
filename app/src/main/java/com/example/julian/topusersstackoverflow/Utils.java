@@ -151,9 +151,10 @@ public final class Utils {
             for (int i=0; i<featureArray.length() && i<10; i++){
                 JSONObject object = featureArray.getJSONObject(i);
                 String nume = object.getString("display_name");
-
+                String imageUrl = object.getString("profile_image");
                 Profile p = new Profile();
                 p.setName(nume);
+                p.setImageUrl(imageUrl);
                 profiles.add(p);
             }
             return profiles;

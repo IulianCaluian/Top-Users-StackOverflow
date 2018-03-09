@@ -7,9 +7,11 @@ package com.example.julian.topusersstackoverflow;
 public class Profile {
     private String mName;
     private String mLocation;
+    private String mImageUrl;
     private int nrMedalsGold;
     private int nrMedalsSilver;
     private int nrMedalsBronze;
+
 
     public Profile(){
         nrMedalsBronze = nrMedalsGold = nrMedalsSilver = 0;
@@ -53,5 +55,13 @@ public class Profile {
 
     public void setNrMedalsBronze(int nrMedalsBronze) {
         this.nrMedalsBronze = nrMedalsBronze;
+    }
+
+    public String getImageUrl() {
+        return mImageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        mImageUrl = imageUrl;
     }
 }

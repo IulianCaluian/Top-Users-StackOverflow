@@ -1,16 +1,22 @@
 package com.example.julian.topusersstackoverflow;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.os.AsyncTask;
+
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -53,17 +59,20 @@ public class ProfileListFragment extends Fragment{
 
     private class ProfileHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView mProfileNameTextView;
+        private ImageView mProfileImageView;
         private Profile mProfile;
 
         public ProfileHolder(View itemView){
             super(itemView);
             itemView.setOnClickListener(this);
             mProfileNameTextView = itemView.findViewById(R.id.list_item_profile_name);
+            mProfileImageView = itemView.findViewById(R.id.list_item_profile_image);
         }
 
         public void bindProfile(Profile profile){
             mProfile = profile;
             mProfileNameTextView.setText(profile.getName());
+            new DownloadImageTask(mProfileImageView).execute(mProfile.getImageUrl());
         }
 
         @Override
@@ -113,6 +122,31 @@ public class ProfileListFragment extends Fragment{
                 return;
             }
             updateUI(profiles);
+        }
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
         }
     }
 }
