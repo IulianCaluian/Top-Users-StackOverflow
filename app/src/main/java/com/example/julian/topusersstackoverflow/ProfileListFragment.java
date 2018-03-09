@@ -10,16 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.os.AsyncTask;
 import java.util.List;
 
 /**
  * Created by Julian on 09.03.2018.
  */
 
-public class ProfileListFragment extends Fragment {
+public class ProfileListFragment extends Fragment{
     private RecyclerView mProfileRecyclerView;
     private ProfileAdapter mProfileAdapter;
+    private static final String USGS_REQUEST_URL ="https://api.stackexchange.com/2.2/users?order=desc&sort=reputation&site=stackoverflow";
+
 
     @Nullable
     @Override
@@ -30,6 +32,9 @@ public class ProfileListFragment extends Fragment {
 
         updateUI();
 
+        MyAsyncTask task = new MyAsyncTask();
+        task.execute(USGS_REQUEST_URL);
+
         return view;
     }
 
@@ -37,6 +42,11 @@ public class ProfileListFragment extends Fragment {
         ProfileLib profileLib = ProfileLib.get();
         List<Profile> profiles = profileLib.getProfiles();
 
+        mProfileAdapter = new ProfileAdapter(profiles);
+        mProfileRecyclerView.setAdapter(mProfileAdapter);
+    }
+
+    private void updateUI(List<Profile> profiles){
         mProfileAdapter = new ProfileAdapter(profiles);
         mProfileRecyclerView.setAdapter(mProfileAdapter);
     }
@@ -83,6 +93,26 @@ public class ProfileListFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mProfiles.size();
+        }
+    }
+
+    class MyAsyncTask extends AsyncTask<String,Void,List<Profile>>{
+        @Override
+        protected List<Profile> doInBackground(String... urls) {
+            if (urls.length < 1 || urls[0] == null) {
+                return null;
+            }
+
+            List<Profile> result = Utils.fetchProfilesData(urls[0]);
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(List<Profile> profiles) {
+            if(profiles == null) {
+                return;
+            }
+            updateUI(profiles);
         }
     }
 }
