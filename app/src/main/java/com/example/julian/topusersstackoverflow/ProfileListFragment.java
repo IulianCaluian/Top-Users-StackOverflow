@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.os.AsyncTask;
@@ -32,6 +33,7 @@ import java.util.List;
 public class ProfileListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Profile>>{
     private RecyclerView mProfileRecyclerView;
     private ProfileAdapter mProfileAdapter;
+    private ProgressBar mProgressBar;
     private static final String USGS_REQUEST_URL ="https://api.stackexchange.com/2.2/users?order=desc&sort=reputation&site=stackoverflow";
     private static final int PROFILE_LOADER_ID = 1;
 
@@ -40,6 +42,7 @@ public class ProfileListFragment extends Fragment implements LoaderManager.Loade
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile_list,container,false);
         mProfileRecyclerView = view.findViewById(R.id.profile_list_recycler_view);
+        mProgressBar = view.findViewById(R.id.profile_list_progress_bar);
         mProfileRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         mProfileAdapter = new ProfileAdapter(null);
@@ -66,6 +69,7 @@ public class ProfileListFragment extends Fragment implements LoaderManager.Loade
         if (profiles != null && !profiles.isEmpty()) {
             mProfileAdapter.addAll(profiles);
         }
+        mProgressBar.setVisibility(View.INVISIBLE);
         updateUI();
     }
 

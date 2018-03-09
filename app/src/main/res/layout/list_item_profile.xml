@@ -4,12 +4,14 @@
     android:layout_width="match_parent"
     android:orientation="horizontal"
     android:padding="8dp"
+    android:background="@drawable/border_background_list_item"
+    android:layout_margin="4dp"
     >
     <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:id="@+id/list_item_profile_image"
-        android:padding="8dp"/>
+        />
     <TextView
         android:id="@+id/list_item_profile_name"
         android:layout_width="wrap_content"
